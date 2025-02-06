@@ -1,0 +1,271 @@
+/* Custom styles */
+@font-face {
+  font-family: "vazir";
+  src: url("../fonts/vazir.eot");
+  src: url("../fonts/vazir.ttf") format("truetype"),
+       url("../fonts/vazir.woff2") format("woff2"),
+       url("../fonts/vazir.woff") format("woff");
+}
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "vazir", sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+/* Header styles */
+.header {
+  position: relative;
+  font-size: 20px;
+  padding: 10px;
+  height: 60px;
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+}
+.top-line {
+  width: 100%;
+}
+.header {
+  width: 20%;
+  margin: 0 auto;
+}
+.btn-light-mode {
+  position: absolute !important;
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+  -webkit-transform: translateY(-50%);
+  -moz-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  -o-transform: translateY(-50%);
+}
+.lights-group {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+}
+.header::before,
+.header::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 0;
+  height: 0;
+  border-left: 30px solid transparent;
+  border-right: 30px solid transparent;
+  border-top: 60px solid rgb(25, 135, 84);
+  transform: translateY(-50%);
+  z-index: -1;
+}
+
+.header::before {
+  left: -28px; /* چپ مثلث */
+}
+
+.header::after {
+  right: -28px; /* راست مثلث */
+}
+
+/* Info bar styling */
+.info-bar {
+  width: 100%;
+  max-width: 600px;
+}
+
+/* =================== New Info Panel Styles =================== */
+/* استایل برای کل پنل اطلاعات */
+.info-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 10px;
+}
+
+/* استایل برای هر آیتم اطلاعات */
+.info-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+/* استایل برای عنوان (Label) */
+.info-label {
+  flex: 1;
+  padding: 8px 12px;
+  border: 2px solid #0d6efd; /* رنگ بوردر */
+  border-radius: 5px;
+  background: linear-gradient(45deg, #0d6efd, #00bfff);
+  color: #fff;
+  font-weight: bold;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* استایل برای مقدار (Value) */
+.info-value {
+  flex: 1;
+  padding: 8px 12px;
+  border: 2px solid #0d6efd;
+  border-radius: 5px;
+  background: linear-gradient(45deg, #0d6efd, #00bfff);
+  color: #fff;
+  font-weight: bold;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* افکت ها هنگام هاور برای انیمیشن نرم */
+.info-label:hover,
+.info-value:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* =================== End Info Panel Styles =================== */
+
+/* Container for the card to apply perspective */
+.card {
+  perspective: 1000px;
+}
+
+/* Inner container that holds both faces */
+.card-inner {
+  position: relative;
+  width: 100%;
+  height: 120px; /* Adjust height as needed */
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+  cursor: pointer;
+}
+
+/* When card is flipped, rotate the inner container */
+.card.flipped .card-inner {
+  transform: rotateY(180deg);
+}
+
+/* The front face of the card (unflipped) */
+.card-front,
+.card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  backface-visibility: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+  font-weight: bold;
+}
+.card-back img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* یا cover، بسته به نیازت */
+}
+
+
+/* Front face style */
+.card-front {
+  background-color: #283149; /* Deep blue/gray background */
+  color: #ffffff;
+}
+
+/* Back face style (revealed content) */
+.card-back {
+  background-color: #404b69; /* Slightly lighter when flipped */
+  color: #ffffff;
+  transform: rotateY(180deg);
+}
+
+/* Style for matched cards (optional) */
+.card.matched .card-back {
+  background-color: #d1e7dd !important; /* Soft pastel green */
+  color: #0f5132 !important;            /* Dark green for contrast */
+  cursor: default;
+}
+
+/* Grid system using Bootstrap's col */
+.game-board {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  padding: 24px;
+  width: 100% !important;
+  height: 70vh;
+}
+
+/* Matte Card Section */
+.matte-card {
+  position: relative; /* برای قرار دادن متن روی تصویر */
+  height: 100px;
+  overflow: hidden;
+}
+
+.matte-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.matte-card span {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #ffffff;         /* رنگ سفید برای متن */
+  font-size: 1rem;        /* اندازه متن، قابل تغییر */
+  font-weight: bold;      /* ضخامت متن */
+  text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);  /* سایه برای خواناتر شدن متن */
+}
+
+/* Buttons */
+.buttons {
+  margin-top: 20px;
+}
+
+button {
+  font-size: 1.2rem;
+  padding: 10px 20px;
+  margin: 10px;
+}
+
+button:focus {
+  outline: none;
+}
+
+/* Info bar styling */
+.info-item {
+  font-size: 1.2rem;
+}
+
+/* Responsive header and game-board */
+@media (max-width: 576px) {
+  .header {
+    font-size: 1.5rem;
+  }
+
+  .info-item {
+    font-size: 1rem;
+  }
+
+  button {
+    font-size: 1rem;
+  }
+}
