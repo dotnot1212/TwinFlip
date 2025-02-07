@@ -23,7 +23,9 @@
       <!-- Game Layout -->
       <div class="row">
         <!-- Left Side (Info Panel) -->
-        <div class="col-3 info-panel shadow-sm">
+        <div
+          class="col-12 col-md-3 info-panel justify-content-strength shadow-sm"
+        >
           <div class="info-item mb-2">
             <div class="info-label">Time:</div>
             <div class="info-value"><span id="time">0</span>s</div>
@@ -41,16 +43,32 @@
             <div class="info-value"><span id="pairs-left">8</span></div>
           </div>
         </div>
-        
 
         <!-- Center (Game Board) -->
-        <div class="col-6">
-          <div
-            class="game-board d-grid gap-3 p-3"
+        <div class="col-12 col-md-6">
+          <!-- بخش کارت‌ها -->
+          <div class="game-body">
+
+            <div class="overlay">
+              <button class="btn btn-info text-light">play</button>
+            </div>
+             
+            <div
+            class="game-board d-grid p-3"
             style="grid-template-columns: repeat(4, 1fr)"
           >
-            <!-- 16 Cards will be dynamically generated using JavaScript -->
+            <!-- کارت‌ها -->
+            <div class="col card" data-index="0">
+              <div class="card-inner">
+                <div class="card-front">?</div>
+                <div class="card-back"></div>
+              </div>
+            </div>
+            <!-- سایر کارت‌ها ... -->
           </div>
+          </div>
+
+          <!-- بخش دکمه‌ها -->
           <div class="buttons text-center my-4">
             <button id="reset" class="btn btn-success mx-2">Reset</button>
             <button id="reload" class="btn btn-secondary mx-2">Reload</button>
@@ -58,28 +76,29 @@
         </div>
 
         <!-- Right Side (Random Cards Section) -->
-        <div class="col-3 d-flex flex-column align-items-center p-3 bg-light shadow-sm">
+        <div
+          class="col-12 col-md-3 d-flex flex-column align-items-center p-3 bg-light shadow-sm"
+        >
           <h5 class="text-center">Random Cards</h5>
           <div class="row w-100 g-2">
             <div class="col-6 matte-card">
-              <img src="/img/matte.jpg" alt="Matte Card" />
+              <img src="img/matte.jpg" alt="Matte Card" />
               <span>soon...</span>
             </div>
             <div class="col-6 matte-card">
-              <img src="/img/matte.jpg" alt="Matte Card" />
+              <img src="img/matte.jpg" alt="Matte Card" />
               <span>soon...</span>
             </div>
             <div class="col-6 matte-card">
-              <img src="/img/matte.jpg" alt="Matte Card" />
+              <img src="img/matte.jpg" alt="Matte Card" />
               <span>soon...</span>
             </div>
             <div class="col-6 matte-card">
-              <img src="/img/matte.jpg" alt="Matte Card" />
+              <img src="img/matte.jpg" alt="Matte Card" />
               <span>soon...</span>
             </div>
           </div>
         </div>
-        
       </div>
     </div>
 
