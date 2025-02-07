@@ -6,7 +6,6 @@ function getRandomIcons() {
   let availableIcons = Array.from(
     { length: totalIcons },
     (_, i) => `icons/${i + 1}.png`
-  
   );
   availableIcons.sort(() => Math.random() - 0.5); // تصادفی‌سازی لیست
   return availableIcons.slice(0, 8); // گرفتن ۸ آیکون اول
@@ -17,8 +16,7 @@ let cardsArray = getRandomIcons().flatMap((icon) => [icon, icon]);
 
 // تابع شافل با الگوریتم Fisher-Yates
 function shuffle(array) {
-  let currentIndex = array.length,
-    randomIndex;
+  let currentIndex = array.length, randomIndex;
   while (currentIndex !== 0) {
     randomIndex = Math.floor(Math.random() * currentIndex);
     currentIndex--;
@@ -50,8 +48,8 @@ const pairsLeftDisplay = document.getElementById("pairs-left");
 const resetButton = document.getElementById("reset");
 const reloadButton = document.getElementById("reload");
 
-// شروع بازی
-function startGame() {
+// تابع برای چیدن کارت‌ها بدون شروع بازی
+function initBoard() {
   cards = shuffle([...cardsArray]);
   gameBoard.innerHTML = "";
   flippedCards = [];
@@ -60,10 +58,10 @@ function startGame() {
   correct = 0;
   pairsLeft = 8;
   time = 0;
-  gameInProgress = true;
+  gameInProgress = false; // بازی هنوز شروع نشده
   updateUI();
 
-  // ایجاد کارت‌ها
+  // ایجاد و چیدن کارت‌ها
   cards.forEach((card, index) => {
     const cardElement = document.createElement("div");
     cardElement.classList.add("col", "card");
@@ -79,8 +77,11 @@ function startGame() {
       flipCard(cardElement, card, index)
     );
   });
+}
 
-  // شروع تایمر
+// تابع شروع بازی (فعال کردن بازی و شروع تایمر)
+function startGame() {
+  gameInProgress = true; // بازی فعال می‌شود
   clearInterval(timer);
   timer = setInterval(() => {
     if (gameInProgress) {
@@ -97,8 +98,9 @@ function updateUI() {
   pairsLeftDisplay.textContent = pairsLeft;
 }
 
-// فلیپ کردن کارت
+// تابع فلیپ کردن کارت
 function flipCard(cardElement, card, index) {
+  // اگر بازی شروع نشده یا دو کارت در حال نمایش هستند، کاری انجام نده
   if (
     !gameInProgress ||
     flippedCards.length >= 2 ||
@@ -154,9 +156,24 @@ function checkMatch() {
   }
 }
 
-// دکمه‌های ریست و ریلود
-resetButton.addEventListener("click", startGame);
+// رویداد دکمه Reset: ریست بازی و نمایش دوباره overlay
+resetButton.addEventListener("click", () => {
+  clearInterval(timer);
+  initBoard();
+  document.querySelector(".overlay").style.display = "flex";
+});
+
+// رویداد دکمه Reload: بارگذاری مجدد صفحه
 reloadButton.addEventListener("click", () => location.reload());
 
-// اجرای بازی هنگام لود شدن صفحه
-startGame();
+// رویداد کلیک بر روی دکمه Play در overlay
+const playButton = document.querySelector(".overlay button");
+playButton.addEventListener("click", () => {
+  // پنهان کردن overlay
+  document.querySelector(".overlay").style.display = "none";
+  // شروع بازی (فعال شدن بازی و تایمر)
+  startGame();
+});
+
+// هنگام لود صفحه، کارت‌ها چیده می‌شوند اما بازی شروع نیست
+initBoard();
