@@ -13,13 +13,34 @@
   box-sizing: border-box;
 }
 
+/* تعریف متغیرهای رنگ در حالت پیش‌فرض (لایت مود) */
+:root {
+  --bg-color: #f8f9fa;
+  --text-color: #000;
+  --header-bg: #198754;
+  --header-text-color: #fff;
+  --card-front-bg: #283149;
+  --card-back-bg: #404b69;
+}
+
+/* تعریف متغیرهای رنگ برای حالت تاریک (دارک مود) */
+.dark-mode {
+  --bg-color: #1c1c1c;
+  --text-color: #e0e0e0;
+  --header-bg: #333;
+  --header-text-color: #fff;
+  --card-front-bg: #555;
+  --card-back-bg: #777;
+}
+
 body {
   font-family: "vazir", sans-serif;
   display: flex;
   flex-direction: column;
   align-items: center;
   min-height: 100vh;
-  background-color: #f8f9fa;
+  background-color: var(--bg-color);
+  color: var(--text-color);
 }
 
 /* Header styles */
@@ -33,14 +54,66 @@ body {
   -moz-border-radius: 5px;
   -ms-border-radius: 5px;
   -o-border-radius: 5px;
+  width: 20%;
+  margin: 0 auto;
+  background-color: var(--header-bg);
+  color: var(--header-text-color);
 }
+
+#themeToggle {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 8px 12px;
+  border: none;
+  background: none;
+  font-size: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+#themeToggle i {
+  color: var(--text-color); /* استفاده از متغیر رنگ برای سازگاری با تم */
+}
+
+#themeToggle:hover {
+  transform: scale(1.1);
+  background: none;
+}
+
+#themeToggle:focus {
+  box-shadow: none;
+}
+
+#themeToggle i.fa-sun {
+  color: #ffd700; /* رنگ طلایی برای خورشید */
+}
+
+#themeToggle i.fa-moon {
+  color: #f0f0f0; /* رنگ نقره‌ای برای ماه */
+}
+
+.card-front {
+  background-color: var(--card-front-bg);
+  color: var(--header-text-color);
+}
+
+.card-back {
+  background-color: var(--card-back-bg);
+  color: var(--header-text-color);
+}
+
+/* به‌روزرسانی استایل آیتم‌های اطلاعات (در صورت نیاز) */
+.info-label,
+.info-value {
+  background: linear-gradient(45deg, var(--header-bg), var(--card-back-bg));
+  color: var(--header-text-color);
+}
+
 .top-line {
   width: 100%;
 }
-.header {
-  width: 20%;
-  margin: 0 auto;
-}
+
 .btn-light-mode {
   position: absolute !important;
   top: 50%;
@@ -143,7 +216,6 @@ body {
 /* Container for the card to apply perspective */
 .card {
   perspective: 1000px;
-  
 }
 
 /* Inner container that holds both faces */
@@ -209,23 +281,23 @@ body {
   padding: 24px;
   width: 100% !important;
 }
-.game-body{
+.game-body {
   position: relative;
   width: 100%;
 }
-  .overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5); /* پس‌زمینه سیاه با شفافیت 0.5 */
-    z-index: 10;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-.overlay button{
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5); /* پس‌زمینه سیاه با شفافیت 0.5 */
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.overlay button {
   font-size: 20px;
   padding: 20px 30px;
   text-shadow: 2px 2px 2px black;
@@ -275,19 +347,52 @@ button:focus {
   font-size: 1.2rem;
 }
 
+.shake {
+  animation: shake 0.1s ease-in-out 5;
+  -webkit-animation: shake 0.1s ease-in-out 5;
+}
+
+@keyframes shake {
+  0% {
+    transform: translate(0, 0);
+    box-shadow: 2px 2px 10px red;
+  }
+  25% {
+    transform: translate(2px, 0);
+    -webkit-transform: translate(2px, 0);
+    -moz-transform: translate(2px, 0);
+    -ms-transform: translate(2px, 0);
+    -o-transform: translate(2px, 0);
+  }
+  50% {
+    transform: translate(0, 2px);
+    -webkit-transform: translate(0, 2px);
+    -moz-transform: translate(0, 2px);
+    -ms-transform: translate(0, 2px);
+    -o-transform: translate(0, 2px);
+  }
+  75% {
+    transform: translate(-2px, 0);
+    -webkit-transform: translate(-2px, 0);
+    -moz-transform: translate(-2px, 0);
+    -ms-transform: translate(-2px, 0);
+    -o-transform: translate(-2px, 0);
+  }
+  100% {
+    transform: translate(0, 0);
+    box-shadow: 2px 2px 10px red;
+  }
+}
 
 @media (max-width: 756px) {
   .game-board {
- 
     gap: 5px !important;
     padding: 5px !important;
-  
   }
-  .info-panel{
+  .info-panel {
     display: grid;
-    grid-template-columns: repeat(2,1fr);
-    grid-template-rows: repeat(2,1fr);
-
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
   }
   .info-panel .info-item {
     display: flex;
@@ -301,12 +406,13 @@ button:focus {
   .info-panel .info-item .info-value {
     width: 100% !important;
   }
-  .card-inner{
+  .card-inner {
     height: 100px !important;
   }
   .header {
     font-size: 16px;
-    width: 50%;
+    width: 30%;
+    height: 50px !important;
   }
 }
 
@@ -314,13 +420,14 @@ button:focus {
 @media (max-width: 576px) {
   .header {
     font-size: 14px;
-    width: 70%;
+    width: 40%;
+    height: 40px !important;
   }
 
   .info-item {
     font-size: 1rem;
   }
-  .card-inner{
+  .card-inner {
     height: 80px !important;
   }
 
@@ -328,4 +435,3 @@ button:focus {
     font-size: 1rem;
   }
 }
-
