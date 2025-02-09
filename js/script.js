@@ -11,12 +11,29 @@ function getRandomIcons() {
   return availableIcons.slice(0, 8); // گرفتن ۸ آیکون اول
 }
 
+// =====================
+// **بخش پیش‌بارگذاری آیکون‌ها (Preload)**
+// =====================
+function preloadIcons(icons) {
+  icons.forEach((src) => {
+    const img = new Image();
+    img.src = src;
+  });
+}
+
+// انتخاب آیکون‌ها به‌صورت تصادفی
+const selectedIcons = getRandomIcons();
+
+// پیش‌بارگذاری آیکون‌های انتخاب‌شده
+preloadIcons(selectedIcons);
+
 // تولید آرایه کارت‌ها (هر آیکون دوبار تکرار می‌شود)
-let cardsArray = getRandomIcons().flatMap((icon) => [icon, icon]);
+let cardsArray = selectedIcons.flatMap((icon) => [icon, icon]);
 
 // تابع شافل با الگوریتم Fisher-Yates
 function shuffle(array) {
-  let currentIndex = array.length, randomIndex;
+  let currentIndex = array.length,
+    randomIndex;
   while (currentIndex !== 0) {
     randomIndex = Math.floor(Math.random() * currentIndex);
     currentIndex--;
@@ -81,12 +98,24 @@ function initBoard() {
 
 // تابع شروع بازی (فعال کردن بازی و شروع تایمر)
 function startGame() {
-  gameInProgress = true; // بازی فعال می‌شود
+  gameInProgress = true;
+  time = 60; // تنظیم زمان شروع به ۶۰ ثانیه
+  timeDisplay.textContent = time;
   clearInterval(timer);
   timer = setInterval(() => {
     if (gameInProgress) {
-      time++;
+      time--;
       timeDisplay.textContent = time;
+      if (time <= 0) {
+        clearInterval(timer);
+        gameInProgress = false;
+        alert("زمان تمام شد!");
+        // ریست بازی پس از اتمام زمان (می‌تونی اینجا تغییرات دلخواهت رو اعمال کنی)
+        setTimeout(() => {
+          initBoard();
+          document.querySelector(".overlay").style.display = "flex";
+        }, 500);
+      }
     }
   }, 1000);
 }
@@ -124,10 +153,12 @@ function flipCard(cardElement, card, index) {
 }
 
 // بررسی تطبیق کارت‌ها
+
 function checkMatch() {
   const [firstCard, secondCard] = flippedCards;
 
   if (firstCard.card === secondCard.card) {
+    // در صورت تطبیق
     matchedCards.push(firstCard.cardElement, secondCard.cardElement);
     firstCard.cardElement.classList.add("matched");
     secondCard.cardElement.classList.add("matched");
@@ -140,12 +171,24 @@ function checkMatch() {
     if (pairsLeft === 0) {
       setTimeout(() => {
         alert("🎉 تبریک! شما بازی را بردید! 🎉");
+        initBoard();
+        startGame(); // شروع بازی جدید بلافاصله
+        document.querySelector(".overlay").style.display = "flex";
         clearInterval(timer);
       }, 500);
     }
   } else {
+    // در صورت انتخاب اشتباه
     errors++;
+
+    // اضافه کردن افکت لرزش به تمام کارت‌ها
+    const allCards = document.querySelectorAll(".card");
+    allCards.forEach((card) => card.classList.add("shake"));
+
+    // پس از ۱ ثانیه، افکت لرزش حذف شده و کارت‌های اشتباه برگردانده می‌شوند
     setTimeout(() => {
+      allCards.forEach((card) => card.classList.remove("shake"));
+
       firstCard.cardElement.classList.remove("flipped");
       secondCard.cardElement.classList.remove("flipped");
       firstCard.cardElement.querySelector(".card-back").innerHTML = "";
@@ -174,6 +217,31 @@ playButton.addEventListener("click", () => {
   // شروع بازی (فعال شدن بازی و تایمر)
   startGame();
 });
+
+const themeToggleBtn = document.querySelector('#themeToggle')
+// اصلاح بخش رویداد کلیک
+themeToggleBtn.addEventListener("click", () => {
+  const currentTheme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
+  const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+  setTheme(newTheme);
+});
+
+// تابع اصلاح شده setTheme
+function setTheme(theme) {
+  const themeToggleBtn = document.getElementById("themeToggle");
+  const icon = themeToggleBtn.querySelector('i');
+  
+  if (theme === "dark") {
+    document.body.classList.add("dark-mode");
+    icon.classList.remove('fa-sun');
+    icon.classList.add('fa-moon');
+  } else {
+    document.body.classList.remove("dark-mode");
+    icon.classList.remove('fa-moon');
+    icon.classList.add('fa-sun');
+  }
+  localStorage.setItem("theme", theme);
+}
 
 // هنگام لود صفحه، کارت‌ها چیده می‌شوند اما بازی شروع نیست
 initBoard();
