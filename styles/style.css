@@ -1,4 +1,4 @@
-/* Custom styles */
+/* بارگذاری فونت "vazir" */
 @font-face {
   font-family: "vazir";
   src: url("../fonts/vazir.eot");
@@ -13,26 +13,31 @@
   box-sizing: border-box;
 }
 
-/* تعریف متغیرهای رنگ در حالت پیش‌فرض (لایت مود) */
+/* متغیرهای رنگ در لایت مود */
 :root {
   --bg-color: #f8f9fa;
   --text-color: #000;
   --header-bg: #198754;
   --header-text-color: #fff;
   --card-front-bg: #283149;
-  --card-back-bg: #404b69;
+  --card-back-bg: #b0c4de;
+  --toggle-bg: #dcec7f60;
+  --toggle-border: #50587034;
 }
 
-/* تعریف متغیرهای رنگ برای حالت تاریک (دارک مود) */
+/* متغیرهای رنگ در دارک مود */
 .dark-mode {
-  --bg-color: #1c1c1c;
+  --bg-color: #121212;
   --text-color: #e0e0e0;
-  --header-bg: #333;
+  --header-bg: #1f1f1f;
   --header-text-color: #fff;
-  --card-front-bg: #555;
-  --card-back-bg: #777;
+  --card-front-bg: #333333;
+  --card-back-bg: #252525;
+  --toggle-bg: #2c2c2c;
+  --toggle-border: #444444;
 }
 
+/* استایل بدنه و المان‌های اصلی */
 body {
   font-family: "vazir", sans-serif;
   display: flex;
@@ -43,197 +48,122 @@ body {
   color: var(--text-color);
 }
 
-/* Header styles */
+/* Header */
 .header {
   position: relative;
   font-size: 20px;
   padding: 10px;
   height: 60px;
-  border-radius: 5px;
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
-  -ms-border-radius: 5px;
-  -o-border-radius: 5px;
   width: 20%;
   margin: 0 auto;
+  border-radius: 5px;
   background-color: var(--header-bg);
   color: var(--header-text-color);
 }
 
+/* دکمه تغییر تم */
 #themeToggle {
   position: absolute;
-  left: 10px;
   top: 50%;
+  left: 20px;
   transform: translateY(-50%);
-  padding: 8px 12px;
-  border: none;
-  background: none;
-  font-size: 1.5rem;
   transition: all 0.3s ease;
-}
-
-#themeToggle i {
-  color: var(--text-color); /* استفاده از متغیر رنگ برای سازگاری با تم */
-}
-
-#themeToggle:hover {
-  transform: scale(1.1);
-  background: none;
+  background-color: var(--toggle-bg);
+  border: 1px solid var(--toggle-border);
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 !important;
 }
 
 #themeToggle:focus {
   box-shadow: none;
 }
 
+#themeToggle i {
+  color: var(--text-color);
+}
+
 #themeToggle i.fa-sun {
-  color: #ffd700; /* رنگ طلایی برای خورشید */
+  color: #ffd700;
 }
 
 #themeToggle i.fa-moon {
-  color: #f0f0f0; /* رنگ نقره‌ای برای ماه */
+  color: #f0f0f0;
 }
 
-.card-front {
-  background-color: var(--card-front-bg);
-  color: var(--header-text-color);
-}
-
-.card-back {
-  background-color: var(--card-back-bg);
-  color: var(--header-text-color);
-}
-
-/* به‌روزرسانی استایل آیتم‌های اطلاعات (در صورت نیاز) */
-.info-label,
-.info-value {
-  background: linear-gradient(45deg, var(--header-bg), var(--card-back-bg));
-  color: var(--header-text-color);
-}
-
-.top-line {
-  width: 100%;
-}
-
-.btn-light-mode {
-  position: absolute !important;
-  top: 50%;
-  left: 10px;
-  transform: translateY(-50%);
-  -webkit-transform: translateY(-50%);
-  -moz-transform: translateY(-50%);
-  -ms-transform: translateY(-50%);
-  -o-transform: translateY(-50%);
-}
+/* چراغ‌ها */
 .lights-group {
   position: absolute;
   top: 50%;
   right: 10px;
-}
-.header::before,
-.header::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  width: 0;
-  height: 0;
-  border-left: 30px solid transparent;
-  border-right: 30px solid transparent;
-  border-top: 60px solid rgb(25, 135, 84);
   transform: translateY(-50%);
-  z-index: -1;
-}
-
-.header::before {
-  left: -28px; /* چپ مثلث */
-}
-
-.header::after {
-  right: -28px; /* راست مثلث */
-}
-
-/* Info bar styling */
-.info-bar {
-  width: 100%;
-  max-width: 600px;
-}
-
-/* =================== New Info Panel Styles =================== */
-/* استایل برای کل پنل اطلاعات */
-.info-panel {
   display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding: 20px;
-  background-color: #f8f9fa;
-  border-radius: 10px;
-}
-
-/* استایل برای هر آیتم اطلاعات */
-.info-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
   gap: 10px;
 }
 
-/* استایل برای عنوان (Label) */
-.info-label {
+.light-item {
+  width: 40px;
+  height: 40px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  filter: brightness(90%);
+  transition: 0.15s all ease;
+}
+
+.light-item.active {
+  filter: brightness(150%);
+}
+
+/* استایل پنل اطلاعات در دارک مود */
+.dark-mode .info-item {
+  margin-bottom: 10px;
+}
+
+.dark-mode .info-label,
+.dark-mode .info-value {
   flex: 1;
   padding: 8px 12px;
-  border: 2px solid #0d6efd; /* رنگ بوردر */
+  border: 2px solid #7f00ff;
   border-radius: 5px;
-  background: linear-gradient(45deg, #0d6efd, #00bfff);
+  background: linear-gradient(45deg, #6a11cb, #2575fc);
   color: #fff;
   font-weight: bold;
   text-align: center;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
 }
 
-/* استایل برای مقدار (Value) */
-.info-value {
-  flex: 1;
-  padding: 8px 12px;
-  border: 2px solid #0d6efd;
-  border-radius: 5px;
-  background: linear-gradient(45deg, #0d6efd, #00bfff);
-  color: #fff;
-  font-weight: bold;
-  text-align: center;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-/* افکت ها هنگام هاور برای انیمیشن نرم */
-.info-label:hover,
-.info-value:hover {
+.dark-mode .info-label:hover,
+.dark-mode .info-value:hover {
   transform: scale(1.05);
-  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.7);
 }
 
-/* =================== End Info Panel Styles =================== */
+.dark-mode .lights-group > div {
+  box-shadow: 0 0 10px rgba(255, 223, 0, 0.8) !important;
+}
 
-/* Container for the card to apply perspective */
+/* کارت‌ها */
 .card {
   perspective: 1000px;
 }
 
-/* Inner container that holds both faces */
 .card-inner {
   position: relative;
   width: 100%;
-  height: 120px; /* Adjust height as needed */
+  height: 120px;
   transition: transform 0.6s;
   transform-style: preserve-3d;
   cursor: pointer;
 }
 
-/* When card is flipped, rotate the inner container */
 .card.flipped .card-inner {
   transform: rotateY(180deg);
 }
 
-/* The front face of the card (unflipped) */
 .card-front,
 .card-back {
   position: absolute;
@@ -247,33 +177,105 @@ body {
   font-size: 2rem;
   font-weight: bold;
 }
+
+.card-front {
+  background-color: var(--card-front-bg);
+  color: var(--header-text-color);
+}
+
+.card-back {
+  background-color: var(--card-back-bg);
+  color: var(--header-text-color);
+  transform: rotateY(180deg);
+  overflow: hidden;
+  transition: background-color 0.3s ease;
+}
+
+.card-back.revealed {
+  transition: background-color 0.3s ease;
+}
+
 .card-back img {
   width: 65%;
   height: 65%;
-  object-fit: contain; /* یا cover، بسته به نیازت */
+  object-fit: contain;
+  border-radius: 4px;
 }
 
-/* Front face style */
-.card-front {
-  background-color: #283149; /* Deep blue/gray background */
-  color: #ffffff;
-}
-
-/* Back face style (revealed content) */
-.card-back {
-  background-color: #404b69; /* Slightly lighter when flipped */
-  color: #ffffff;
-  transform: rotateY(180deg);
-}
-
-/* Style for matched cards (optional) */
 .card.matched .card-back {
-  background-color: #d1e7dd !important; /* Soft pastel green */
-  color: #0f5132 !important; /* Dark green for contrast */
+  background: linear-gradient(45deg, #87ceeb, #4682b4) !important;
+  color: #0f5132 !important;
   cursor: default;
 }
 
-/* Grid system using Bootstrap's col */
+.dark-mode .card.matched .card-back {
+  background-color: #12a161 !important;
+  color: #e3ece8 !important;
+}
+
+/* پنل اطلاعات */
+.info-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 1.2rem;
+}
+
+.info-label,
+.info-value {
+  flex: 1;
+  padding: 8px 12px;
+  border: 2px solid #0d6efd;
+  border-radius: 5px;
+  background: linear-gradient(45deg, #0d6efd, #00bfff);
+  color: #fff;
+  font-weight: bold;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.info-label:hover,
+.info-value:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* افکت لرزش */
+.shake {
+  animation: shake 0.1s ease-in-out 5;
+}
+
+@keyframes shake {
+  0% {
+    transform: translate(0, 0);
+    box-shadow: 2px 2px 10px red;
+  }
+  25% {
+    transform: translate(2px, 0);
+  }
+  50% {
+    transform: translate(0, 2px);
+  }
+  75% {
+    transform: translate(-2px, 0);
+  }
+  100% {
+    transform: translate(0, 0);
+    box-shadow: 2px 2px 10px red;
+  }
+}
+
+/* بخش بازی */
 .game-board {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -281,31 +283,34 @@ body {
   padding: 24px;
   width: 100% !important;
 }
+
 .game-body {
   position: relative;
   width: 100%;
 }
+
 .overlay {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5); /* پس‌زمینه سیاه با شفافیت 0.5 */
+  background: rgba(0, 0, 0, 0.5);
   z-index: 10;
   display: flex;
   justify-content: center;
   align-items: center;
 }
+
 .overlay button {
   font-size: 20px;
   padding: 20px 30px;
   text-shadow: 2px 2px 2px black;
 }
 
-/* Matte Card Section */
+/* بخش کارت‌های مات */
 .matte-card {
-  position: relative; /* برای قرار دادن متن روی تصویر */
+  position: relative;
   height: 100px;
   overflow: hidden;
 }
@@ -321,13 +326,13 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  color: #ffffff; /* رنگ سفید برای متن */
-  font-size: 1rem; /* اندازه متن، قابل تغییر */
-  font-weight: bold; /* ضخامت متن */
-  text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5); /* سایه برای خواناتر شدن متن */
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: bold;
+  text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
 }
 
-/* Buttons */
+/* دکمه‌ها */
 .buttons {
   margin-top: 20px;
 }
@@ -342,48 +347,90 @@ button:focus {
   outline: none;
 }
 
-/* Info bar styling */
-.info-item {
+/* استایل کانتینر سکه‌ها */
+.coins-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+
+.coins-display {
   font-size: 1.2rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: var(--bg-color);
+  padding: 10px 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
-.shake {
-  animation: shake 0.1s ease-in-out 5;
-  -webkit-animation: shake 0.1s ease-in-out 5;
+.coins-display i {
+  font-size: 1.5rem;
 }
 
-@keyframes shake {
-  0% {
-    transform: translate(0, 0);
-    box-shadow: 2px 2px 10px red;
-  }
-  25% {
-    transform: translate(2px, 0);
-    -webkit-transform: translate(2px, 0);
-    -moz-transform: translate(2px, 0);
-    -ms-transform: translate(2px, 0);
-    -o-transform: translate(2px, 0);
-  }
-  50% {
-    transform: translate(0, 2px);
-    -webkit-transform: translate(0, 2px);
-    -moz-transform: translate(0, 2px);
-    -ms-transform: translate(0, 2px);
-    -o-transform: translate(0, 2px);
-  }
-  75% {
-    transform: translate(-2px, 0);
-    -webkit-transform: translate(-2px, 0);
-    -moz-transform: translate(-2px, 0);
-    -ms-transform: translate(-2px, 0);
-    -o-transform: translate(-2px, 0);
-  }
-  100% {
-    transform: translate(0, 0);
-    box-shadow: 2px 2px 10px red;
-  }
+/* استایل کانتینر گزینه‌ها */
+.help-container {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  z-index: 1000;
 }
 
+.help-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 200px;
+}
+
+.btn-help {
+  font-size: 1rem;
+  padding: 8px 12px;
+  background-color: #ffca2c;
+  color: #000;
+  border: none;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.btn-help:hover {
+  transform: scale(1.05);
+  background-color: #ffb107;
+}
+
+.btn-help:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.btn-help.active {
+  background-color: #28a745;
+  color: #fff;
+}
+
+/* تنظیمات برای دارک مود */
+.dark-mode .coins-display {
+  background-color: var(--bg-color);
+}
+
+.dark-mode .btn-help {
+  background-color: #ffca2c;
+  color: #000;
+}
+
+.dark-mode .btn-help:hover {
+  background-color: #ffb107;
+}
+
+.dark-mode .btn-help:disabled {
+  background-color: #555;
+}
+
+/* Media Queries */
+
+/* تغییرات برای صفحه‌های با عرض کمتر از 756px */
 @media (max-width: 756px) {
   .game-board {
     gap: 5px !important;
@@ -395,14 +442,9 @@ button:focus {
     grid-template-rows: repeat(2, 1fr);
   }
   .info-panel .info-item {
-    display: flex;
     flex-direction: column;
   }
-
-  .info-panel .info-item .info-label {
-    width: 100% !important;
-  }
-
+  .info-panel .info-item .info-label,
   .info-panel .info-item .info-value {
     width: 100% !important;
   }
@@ -414,24 +456,60 @@ button:focus {
     width: 30%;
     height: 50px !important;
   }
+  .light-item {
+    width: 20px;
+    height: 20px;
+  }
 }
 
-/* Responsive header and game-board */
+/* تغییرات برای صفحه‌های با عرض کمتر از 576px (موبایل) */
 @media (max-width: 576px) {
   .header {
     font-size: 14px;
     width: 40%;
-    height: 40px !important;
   }
-
+  .lights-group {
+    display: none !important;
+  }
   .info-item {
     font-size: 1rem;
   }
   .card-inner {
-    height: 80px !important;
+    height: 70px !important;
   }
-
   button {
     font-size: 1rem;
+  }
+
+  /* سکه‌ها و گزینه‌ها در موبایل */
+  .coins-container {
+    position: static;
+    margin: 10px auto;
+    width: fit-content;
+  }
+  .help-container {
+    position: static;
+    margin: 10px auto;
+    width: 80%;
+    max-width: 200px;
+  }
+  .help-options {
+    width: 100%;
+  }
+  .coins-display {
+    font-size: 1rem;
+    padding: 8px 12px;
+  }
+  .btn-help {
+    font-size: 0.9rem;
+    padding: 6px 10px;
+  }
+  .game-board {
+    padding: 10px !important;
+    gap: 4px !important;
+  }
+  body {
+    padding-top: 20px;
+    padding-bottom: 0;
   }
 }
