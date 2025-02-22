@@ -1,19 +1,16 @@
-// تعداد کل آیکون‌ها در پوشه icons/
+// ------------------ تنظیمات اولیه بازی ------------------
 const totalIcons = 30;
+const TOTAL_PAIRS = 8;
 
-// تابعی که به‌صورت تصادفی ۸ آیکون از بین ۳۰ آیکون انتخاب می‌کند
 function getRandomIcons() {
   let availableIcons = Array.from(
     { length: totalIcons },
     (_, i) => `icons/${i + 1}.png`
   );
-  availableIcons.sort(() => Math.random() - 0.5); // تصادفی‌سازی لیست
-  return availableIcons.slice(0, 8); // گرفتن ۸ آیکون اول
+  availableIcons.sort(() => Math.random() - 0.5);
+  return availableIcons.slice(0, 8);
 }
 
-// =====================
-// **بخش پیش‌بارگذاری آیکون‌ها (Preload)**
-// =====================
 function preloadIcons(icons) {
   icons.forEach((src) => {
     const img = new Image();
@@ -21,16 +18,11 @@ function preloadIcons(icons) {
   });
 }
 
-// انتخاب آیکون‌ها به‌صورت تصادفی
 const selectedIcons = getRandomIcons();
-
-// پیش‌بارگذاری آیکون‌های انتخاب‌شده
 preloadIcons(selectedIcons);
 
-// تولید آرایه کارت‌ها (هر آیکون دوبار تکرار می‌شود)
 let cardsArray = selectedIcons.flatMap((icon) => [icon, icon]);
 
-// تابع شافل با الگوریتم Fisher-Yates
 function shuffle(array) {
   let currentIndex = array.length,
     randomIndex;
@@ -45,16 +37,19 @@ function shuffle(array) {
   return array;
 }
 
-// متغیرهای وضعیت بازی
-let cards = []; // آرایه شافل‌شده کارت‌ها
-let flippedCards = []; // کارت‌های در حال نمایش
-let matchedCards = []; // کارت‌های تطبیق داده شده
-let errors = 0; // تعداد خطاها
-let correct = 0; // تعداد تطبیق‌ها
-let pairsLeft = 8; // تعداد جفت‌های باقی‌مانده
-let timer; // تایمر بازی
-let time = 0; // زمان گذشته
-let gameInProgress = false; // وضعیت بازی
+// ------------------ متغیرهای وضعیت بازی ------------------
+let cards = [];
+let flippedCards = [];
+let matchedCards = [];
+let errors = 0;
+let correct = 0;
+let pairsLeft = TOTAL_PAIRS;
+let timer;
+let time = 0;
+let gameInProgress = false;
+let coins = parseInt(localStorage.getItem("coins")) || 0;
+let doubleCoinsActive = false; // وضعیت دو برابر شدن سکه‌ها
+let doubleCoinsTimeout; // تایمر برای غیرفعال کردن دو برابر شدن
 
 // المان‌های DOM
 const gameBoard = document.querySelector(".game-board");
@@ -62,10 +57,28 @@ const timeDisplay = document.getElementById("time");
 const errorsDisplay = document.getElementById("errors");
 const correctDisplay = document.getElementById("correct");
 const pairsLeftDisplay = document.getElementById("pairs-left");
+const coinsDisplay = document.getElementById("coins");
 const resetButton = document.getElementById("reset");
 const reloadButton = document.getElementById("reload");
+const greenLight = document.querySelector(".green-light");
+const yellowLight = document.querySelector(".yellow-light");
+const redLight = document.querySelector(".red-light");
+const lights = document.querySelectorAll(".lights-group .light-item");
+const hintButton = document.getElementById("hint");
+const extraTimeButton = document.getElementById("extra-time");
+const doubleCoinsButton = document.getElementById("double-coins"); // دکمه جدید
 
-// تابع برای چیدن کارت‌ها بدون شروع بازی
+// قیمت گزینه‌های کمکی
+const HINT_COST = 50;
+const EXTRA_TIME_COST = 30;
+const DOUBLE_COINS_COST = 70; // قیمت برای Double Coins
+
+function shouldShowLights() {
+  return window.innerWidth >= 576;
+}
+
+// ------------------ توابع بازی ------------------
+
 function initBoard() {
   cards = shuffle([...cardsArray]);
   gameBoard.innerHTML = "";
@@ -73,15 +86,16 @@ function initBoard() {
   matchedCards = [];
   errors = 0;
   correct = 0;
-  pairsLeft = 8;
+  pairsLeft = TOTAL_PAIRS;
   time = 0;
-  gameInProgress = false; // بازی هنوز شروع نشده
+  gameInProgress = false;
+  doubleCoinsActive = false; // ریست وضعیت دو برابر شدن
+  clearTimeout(doubleCoinsTimeout); // حذف تایمر قبلی
   updateUI();
 
-  // ایجاد و چیدن کارت‌ها
   cards.forEach((card, index) => {
     const cardElement = document.createElement("div");
-    cardElement.classList.add("col", "card");
+    cardElement.classList.add("col", "card", "bg-transparent");
     cardElement.setAttribute("data-index", index);
     cardElement.innerHTML = `
       <div class="card-inner">
@@ -96,10 +110,9 @@ function initBoard() {
   });
 }
 
-// تابع شروع بازی (فعال کردن بازی و شروع تایمر)
 function startGame() {
   gameInProgress = true;
-  time = 60; // تنظیم زمان شروع به ۶۰ ثانیه
+  time = 60;
   timeDisplay.textContent = time;
   clearInterval(timer);
   timer = setInterval(() => {
@@ -110,7 +123,6 @@ function startGame() {
         clearInterval(timer);
         gameInProgress = false;
         alert("زمان تمام شد!");
-        // ریست بازی پس از اتمام زمان (می‌تونی اینجا تغییرات دلخواهت رو اعمال کنی)
         setTimeout(() => {
           initBoard();
           document.querySelector(".overlay").style.display = "flex";
@@ -120,16 +132,16 @@ function startGame() {
   }, 1000);
 }
 
-// بروزرسانی اطلاعات UI
 function updateUI() {
   errorsDisplay.textContent = errors;
   correctDisplay.textContent = correct;
-  pairsLeftDisplay.textContent = pairsLeft;
+  pairsLeftDisplay.textContent = `${pairsLeft}/${TOTAL_PAIRS}`;
+  coinsDisplay.textContent = coins;
+  localStorage.setItem("coins", coins);
+  updateHelpButtons();
 }
 
-// تابع فلیپ کردن کارت
 function flipCard(cardElement, card, index) {
-  // اگر بازی شروع نشده یا دو کارت در حال نمایش هستند، کاری انجام نده
   if (
     !gameInProgress ||
     flippedCards.length >= 2 ||
@@ -140,31 +152,49 @@ function flipCard(cardElement, card, index) {
   }
 
   cardElement.classList.add("flipped");
-
-  // نمایش تصویر روی کارت
   const cardBack = cardElement.querySelector(".card-back");
   cardBack.innerHTML = `<img src="${card}" alt="icon" class="card-img">`;
+  cardBack.classList.add("revealed");
 
   flippedCards.push({ cardElement, card, index });
 
+  if (flippedCards.length === 1 && shouldShowLights()) {
+    lights.forEach((light) => {
+      if (light.classList.contains("active")) {
+        light.classList.remove("active");
+      }
+    });
+    yellowLight.classList.add("active");
+  }
   if (flippedCards.length === 2) {
+    if (shouldShowLights()) {
+      yellowLight.classList.remove("active");
+    }
     checkMatch();
   }
 }
-
-// بررسی تطبیق کارت‌ها
 
 function checkMatch() {
   const [firstCard, secondCard] = flippedCards;
 
   if (firstCard.card === secondCard.card) {
-    // در صورت تطبیق
     matchedCards.push(firstCard.cardElement, secondCard.cardElement);
     firstCard.cardElement.classList.add("matched");
     secondCard.cardElement.classList.add("matched");
 
+    if (shouldShowLights()) {
+      lights.forEach((light) => {
+        if (light.classList.contains("active")) {
+          light.classList.remove("active");
+        }
+      });
+      greenLight.classList.add("active");
+      setTimeout(() => greenLight.classList.remove("active"), 2500);
+    }
+
     correct++;
     pairsLeft--;
+    coins += doubleCoinsActive ? 20 : 10; // اگر دو برابر فعال باشه 20 سکه، иначе 10
     updateUI();
     flippedCards = [];
 
@@ -172,23 +202,27 @@ function checkMatch() {
       setTimeout(() => {
         alert("🎉 تبریک! شما بازی را بردید! 🎉");
         initBoard();
-        startGame(); // شروع بازی جدید بلافاصله
         document.querySelector(".overlay").style.display = "flex";
         clearInterval(timer);
       }, 500);
     }
   } else {
-    // در صورت انتخاب اشتباه
     errors++;
+    if (shouldShowLights()) {
+      lights.forEach((light) => {
+        if (light.classList.contains("active")) {
+          light.classList.remove("active");
+        }
+      });
+      redLight.classList.add("active");
+      setTimeout(() => redLight.classList.remove("active"), 2500);
+    }
 
-    // اضافه کردن افکت لرزش به تمام کارت‌ها
     const allCards = document.querySelectorAll(".card");
     allCards.forEach((card) => card.classList.add("shake"));
 
-    // پس از ۱ ثانیه، افکت لرزش حذف شده و کارت‌های اشتباه برگردانده می‌شوند
     setTimeout(() => {
       allCards.forEach((card) => card.classList.remove("shake"));
-
       firstCard.cardElement.classList.remove("flipped");
       secondCard.cardElement.classList.remove("flipped");
       firstCard.cardElement.querySelector(".card-back").innerHTML = "";
@@ -199,49 +233,111 @@ function checkMatch() {
   }
 }
 
-// رویداد دکمه Reset: ریست بازی و نمایش دوباره overlay
+// ------------------ توابع گزینه‌های کمکی ------------------
+
+function updateHelpButtons() {
+  hintButton.disabled = coins < HINT_COST;
+  extraTimeButton.disabled = coins < EXTRA_TIME_COST;
+  doubleCoinsButton.disabled = coins < DOUBLE_COINS_COST || doubleCoinsActive; // غیرفعال اگه قبلاً فعال باشه
+}
+
+function useHint() {
+  if (coins < HINT_COST || flippedCards.length > 0) return;
+  coins -= HINT_COST;
+
+  const unmatchedCards = cards
+    .map((card, index) => ({ card, index }))
+    .filter((c) => !matchedCards.includes(gameBoard.children[c.index]));
+  const firstCard = unmatchedCards.find((c) =>
+    unmatchedCards.some((other) => other.card === c.card && other.index !== c.index)
+  );
+  const secondCard = unmatchedCards.find(
+    (c) => c.card === firstCard.card && c.index !== firstCard.index
+  );
+
+  const card1 = gameBoard.children[firstCard.index];
+  const card2 = gameBoard.children[secondCard.index];
+  card1.classList.add("flipped");
+  card2.classList.add("flipped");
+  card1.querySelector(".card-back").innerHTML = `<img src="${firstCard.card}" alt="icon" class="card-img">`;
+  card2.querySelector(".card-back").innerHTML = `<img src="${secondCard.card}" alt="icon" class="card-img">`;
+
+  setTimeout(() => {
+    if (!matchedCards.includes(card1)) {
+      card1.classList.remove("flipped");
+      card1.querySelector(".card-back").innerHTML = "";
+    }
+    if (!matchedCards.includes(card2)) {
+      card2.classList.remove("flipped");
+      card2.querySelector(".card-back").innerHTML = "";
+    }
+    updateUI();
+  }, 2000);
+}
+
+function useExtraTime() {
+  if (coins < EXTRA_TIME_COST) return;
+  coins -= EXTRA_TIME_COST;
+  time += 10;
+  timeDisplay.textContent = time;
+  updateUI();
+}
+
+function useDoubleCoins() {
+  if (coins < DOUBLE_COINS_COST || doubleCoinsActive) return;
+  coins -= DOUBLE_COINS_COST;
+  doubleCoinsActive = true;
+  doubleCoinsButton.classList.add("active"); // افزودن کلاس برای نمایش فعال بودن (اختیاری)
+
+  doubleCoinsTimeout = setTimeout(() => {
+    doubleCoinsActive = false;
+    doubleCoinsButton.classList.remove("active"); // حذف کلاس بعد از اتمام
+    updateUI();
+  }, 10000); // 10 ثانیه
+
+  updateUI();
+}
+
+// ------------------ رویدادها ------------------
+
 resetButton.addEventListener("click", () => {
   clearInterval(timer);
   initBoard();
   document.querySelector(".overlay").style.display = "flex";
 });
 
-// رویداد دکمه Reload: بارگذاری مجدد صفحه
 reloadButton.addEventListener("click", () => location.reload());
 
-// رویداد کلیک بر روی دکمه Play در overlay
 const playButton = document.querySelector(".overlay button");
 playButton.addEventListener("click", () => {
-  // پنهان کردن overlay
   document.querySelector(".overlay").style.display = "none";
-  // شروع بازی (فعال شدن بازی و تایمر)
   startGame();
 });
 
-const themeToggleBtn = document.querySelector('#themeToggle')
-// اصلاح بخش رویداد کلیک
+const themeToggleBtn = document.querySelector("#themeToggle");
 themeToggleBtn.addEventListener("click", () => {
-  const currentTheme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
-  const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+  const currentTheme = document.body.classList.contains("dark-mode") ? "dark" : "light";
+  const newTheme = currentTheme === "light" ? "dark" : "light";
   setTheme(newTheme);
 });
 
-// تابع اصلاح شده setTheme
+hintButton.addEventListener("click", useHint);
+extraTimeButton.addEventListener("click", useExtraTime);
+doubleCoinsButton.addEventListener("click", useDoubleCoins); // رویداد جدید
+
 function setTheme(theme) {
   const themeToggleBtn = document.getElementById("themeToggle");
-  const icon = themeToggleBtn.querySelector('i');
-  
+  const icon = themeToggleBtn.querySelector("i");
   if (theme === "dark") {
     document.body.classList.add("dark-mode");
-    icon.classList.remove('fa-sun');
-    icon.classList.add('fa-moon');
+    icon.classList.remove("fa-sun");
+    icon.classList.add("fa-moon");
   } else {
     document.body.classList.remove("dark-mode");
-    icon.classList.remove('fa-moon');
-    icon.classList.add('fa-sun');
+    icon.classList.remove("fa-moon");
+    icon.classList.add("fa-sun");
   }
   localStorage.setItem("theme", theme);
 }
 
-// هنگام لود صفحه، کارت‌ها چیده می‌شوند اما بازی شروع نیست
 initBoard();
