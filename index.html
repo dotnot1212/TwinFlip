@@ -17,105 +17,218 @@
   </head>
   <body>
     <div class="container-fluid">
-      <!-- Header -->
-      <header class="w-100" style="position: relative">
-        <div class="header text-center py-3 mb-4">
-          TwinFlip
+      <!-- Top Navbar -->
+      <nav
+        class="top-nav d-flex justify-content-between align-items-center py-2 px-3"
+      >
+        <div class="theme-selector">
+          <button
+            id="themeToggle"
+            class="btn current-theme"
+            aria-label="تغییر تم"
+          >
+            <i class="fas fa-sun"></i> روز
+          </button>
+          <div class="theme-dropdown">
+            <button class="theme-option" data-theme="light">
+              <i class="fas fa-sun"></i> روز
+            </button>
+            <button class="theme-option" data-theme="dark">
+              <i class="fas fa-moon"></i> شب
+            </button>
+            <button class="theme-option" data-theme="green">
+              <i class="fas fa-leaf"></i> سبز
+            </button>
+            <button class="theme-option" data-theme="purple">
+              <i class="fas fa-gem"></i> بنفش
+            </button>
+            <button class="theme-option" data-theme="red">
+              <i class="fas fa-fire"></i> قرمز
+            </button>
+          </div>
         </div>
-        <button id="themeToggle" class="btn btn-light-mode" aria-label="تغییر حالت">
-          <i class="fas fa-sun"></i>
-        </button>
-        <div class="d-flex lights-group align-items-center">
-          <div class="bg-success light-item green-light rounded-circle me-2"></div>
-          <div class="bg-warning light-item yellow-light rounded-circle me-2"></div>
-          <div class="bg-danger light-item red-light rounded-circle"></div>
+        <div class="game-title">TwinFlip</div>
+      </nav>
+
+      <!-- Sub-Header -->
+      <header class="sub-header d-flex justify-content-between py-3">
+        <div class="records-display">
+          <div class="record-box">
+            <div class="record-item record-high">
+              بیشترین: <span id="high-score">0</span>
+            </div>
+            <div class="d-flex justify-content-between">
+              <div class="record-item record-low">
+                کم‌ترین: <span id="low-score">0</span>
+              </div>
+              <div class="record-item record-avg">
+                متوسط: <span id="avg-score">0</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="special-cards">
+          <h5>کارت‌های ویژه</h5>
+          <div class="cards-stack" id="special-cards-stack"></div>
         </div>
       </header>
 
-      <!-- Game Layout -->
-      <div class="row">
-        <!-- Left Side (Info Panel) -->
-        <div class="col-12 col-md-3">
-          <div class="info-panel justify-content-center mb-5 shadow-sm">
-            <div class="info-item mb-2">
-              <div class="info-label">Timer:</div>
-              <div class="info-value"><span id="time">0</span>s</div>
-            </div>
-            <div class="info-item mb-2">
-              <div class="info-label">Misses:</div>
-              <div class="info-value"><span id="errors">0</span></div>
-            </div>
-            <div class="info-item mb-2">
-              <div class="info-label">Matches:</div>
-              <div class="info-value"><span id="correct">0</span></div>
-            </div>
-            <div class="info-item">
-              <div class="info-label">Targets:</div>
-              <div class="info-value"><span id="pairs-left">8/8</span></div>
-            </div>
+      <!-- Game Board -->
+      <div class="game-body">
+        <div class="overlay">
+          <button class="btn btn-info text-light">شروع</button>
+        </div>
+        <div
+          class="game-board d-grid p-3"
+          style="grid-template-columns: repeat(4, 1fr)"
+        ></div>
+      </div>
+
+      <!-- Footer -->
+      <footer class="game-footer text-center py-3">
+        <button id="reload" class="btn btn-secondary mb-3">ریلود</button>
+        <div class="level-display">
+          <h5>Level: <span id="current-level">1</span></h5>
+          <div class="levels d-flex justify-content-center gap-2">
+            <span class="level-item active">1</span>
+            <span class="level-item">2</span>
+            <span class="level-item">3</span>
+            <span class="level-item">4</span>
+            <span class="level-item">5</span>
+            <span class="level-item">6</span>
+            <span class="level-item">7</span>
           </div>
         </div>
 
-        <!-- Center (Game Board and Coins/Help Options) -->
-        <div class="col-12 col-md-6">
-          <div class="game-body">
-            <div class="overlay">
-              <button class="btn btn-info text-light">play</button>
-            </div>
-            <div class="game-board d-grid p-3" style="grid-template-columns: repeat(4, 1fr)">
-              <!-- کارت‌ها اینجا تولید می‌شوند -->
-            </div>
+        <!-- Help Menu -->
+        <div class="help-menu">
+          <div class="coins-display">
+            <i class="fas fa-coins text-warning"></i>
+            <span id="coins">0</span> سکه
           </div>
-
-          <!-- Coins and Help Options زیر Game Body -->
-          <div class="game-footer">
-            <div class="coins-container">
-              <div class="coins-display">
-                <i class="fas fa-coins text-warning"></i>
-                <span id="coins">0</span> Coins
-              </div>
-            </div>
-            <div class="help-container">
-              <div class="help-options">
-                <button id="hint" class="btn btn-help mb-2 w-100">Hint (50 Coins)</button>
-                <button id="extra-time" class="btn btn-help mb-2 w-100">+10s Time (30 Coins)</button>
-                <button id="double-coins" class="btn btn-help w-100">Double Coins (70 Coins)</button>
-              </div>
-            </div>
-          </div>
-
-          <div class="buttons text-center my-4">
-            <button id="reset" class="btn btn-success mx-2">Reset</button>
-            <button id="reload" class="btn btn-secondary mx-2">Reload</button>
+          <button id="help-toggle" class="btn btn-help-toggle" aria-label="کمک">
+            <i class="fas fa-question"></i>
+          </button>
+          <div class="help-dropdown">
+            <button id="hint" class="btn btn-help w-100">
+              راهنما (50 سکه)
+            </button>
+            <button id="extra-time" class="btn btn-help w-100">
+              +10 ثانیه (30 سکه)
+            </button>
+            <button id="double-coins" class="btn btn-help w-100">
+              دو برابر سکه (70 سکه)
+            </button>
           </div>
         </div>
+      </footer>
+    </div>
 
-        <!-- Right Side (Random Cards Section) -->
-        <div class="col-12 col-md-3 d-flex flex-column justify-content-center align-items-center mb-5 p-3-light shadow-sm">
-          <h5 class="text-center">Random Cards</h5>
-          <div class="row w-100 g-2">
-            <div class="col-6 matte-card">
-              <img src="img/matte.jpg" alt="Matte Card" />
-              <span>soon...</span>
-            </div>
-            <div class="col-6 matte-card">
-              <img src="img/matte.jpg" alt="Matte Card" />
-              <span>soon...</span>
-            </div>
-            <div class="col-6 matte-card">
-              <img src="img/matte.jpg" alt="Matte Card" />
-              <span>soon...</span>
-            </div>
-            <div class="col-6 matte-card">
-              <img src="img/matte.jpg" alt="Matte Card" />
-              <span>soon...</span>
-            </div>
+    <!-- Auth Modal -->
+    <div
+      class="modal fade"
+      id="authModal"
+      tabindex="-1"
+      aria-labelledby="authModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="authModalLabel">
+              به TwinFlip خوش آمدید
+            </h5>
+          </div>
+          <div class="modal-body text-center">
+            <button id="loginBtn" class="btn btn-primary w-75 mb-3">
+              ورود
+            </button>
+            <button id="signupBtn" class="btn btn-success w-75">ثبت‌نام</button>
           </div>
         </div>
       </div>
     </div>
 
-    <script src="js/script.js"></script>
+    <!-- Login/Signup Form Modal -->
+    <div
+      class="modal fade"
+      id="userFormModal"
+      tabindex="-1"
+      aria-labelledby="userFormModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="userFormModalLabel">ورود یا ثبت‌نام</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="بستن"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="userForm">
+              <div class="mb-3">
+                <label for="username" class="form-label">نام کاربری</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="username"
+                  placeholder="نام کاربری خود را وارد کنید"
+                  required
+                />
+              </div>
+              <button
+                type="submit"
+                class="btn btn-primary w-100"
+                id="submitUserForm"
+              >
+                تأیید
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Game Modal -->
+    <div
+      class="modal fade"
+      id="gameModal"
+      tabindex="-1"
+      aria-labelledby="gameModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="gameModalLabel">عنوان بازی</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="بستن"
+            ></button>
+          </div>
+          <div class="modal-body text-center">پیام بازی</div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-primary"
+              id="modalRestartButton"
+              data-bs-dismiss="modal"
+            >
+              بازی دوباره
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/script.js"></script>
   </body>
 </html>
