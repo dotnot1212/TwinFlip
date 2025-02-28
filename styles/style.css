@@ -1,10 +1,8 @@
-/* بارگذاری فونت "vazir" */
+/* Font Face */
 @font-face {
   font-family: "vazir";
   src: url("../fonts/vazir.eot");
-  src: url("../fonts/vazir.ttf") format("truetype"),
-    url("../fonts/vazir.woff2") format("woff2"),
-    url("../fonts/vazir.woff") format("woff");
+  src: url("../fonts/vazir.ttf") format("truetype"), url("../fonts/vazir.woff2") format("woff2"), url("../fonts/vazir.woff") format("woff");
 }
 
 * {
@@ -13,140 +11,210 @@
   box-sizing: border-box;
 }
 
-/* متغیرهای رنگ در لایت مود */
+/* Theme Variables */
 :root {
   --bg-color: #f8f9fa;
   --text-color: #000;
   --header-bg: #198754;
-  --header-text-color: #fff;
   --card-front-bg: #283149;
   --card-back-bg: #b0c4de;
   --toggle-bg: #dcec7f60;
   --toggle-border: #50587034;
 }
 
-/* متغیرهای رنگ در دارک مود */
 .dark-mode {
   --bg-color: #121212;
   --text-color: #e0e0e0;
   --header-bg: #1f1f1f;
-  --header-text-color: #fff;
   --card-front-bg: #333333;
   --card-back-bg: #252525;
-  --toggle-bg: #2c2c2c;
-  --toggle-border: #444444;
 }
 
-/* استایل بدنه و المان‌های اصلی */
+.green-mode {
+  --bg-color: #e0f7e9;
+  --text-color: #1a3c34;
+  --header-bg: #28a745;
+  --card-front-bg: #2e7d32;
+  --card-back-bg: #a5d6a7;
+}
+
+.purple-mode {
+  --bg-color: #f3e5f5;
+  --text-color: #4a0072;
+  --header-bg: #6a1b9a;
+  --card-front-bg: #8e24aa;
+  --card-back-bg: #ce93d8;
+}
+
+.red-mode {
+  --bg-color: #ffebee;
+  --text-color: #b71c1c;
+  --header-bg: #d32f2f;
+  --card-front-bg: #c62828;
+  --card-back-bg: #ef9a9a;
+}
+
 body {
   font-family: "vazir", sans-serif;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-height: 100vh;
   background-color: var(--bg-color);
   color: var(--text-color);
+  min-height: 100vh;
 }
 
-/* Header */
-.header {
-  position: relative;
-  font-size: 20px;
-  padding: 10px;
-  height: 60px;
-  width: 20%;
-  margin: 0 auto;
-  border-radius: 5px;
+/* Top Navbar */
+.top-nav {
   background-color: var(--header-bg);
-  color: var(--header-text-color);
+  color: #fff;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
 }
 
-/* دکمه تغییر تم */
-#themeToggle {
-  position: absolute;
-  top: 50%;
-  left: 20px;
-  transform: translateY(-50%);
-  transition: all 0.3s ease;
+.game-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.theme-selector {
+  position: relative;
+}
+
+.current-theme {
   background-color: var(--toggle-bg);
   border: 1px solid var(--toggle-border);
-  width: 45px;
-  height: 45px;
-  border-radius: 50%;
   display: flex;
   align-items: center;
-  justify-content: center;
-  margin: 0 !important;
+  gap: 5px;
 }
 
-#themeToggle:focus {
-  box-shadow: none;
-}
-
-#themeToggle i {
-  color: var(--text-color);
-}
-
-#themeToggle i.fa-sun {
-  color: #ffd700;
-}
-
-#themeToggle i.fa-moon {
-  color: #f0f0f0;
-}
-
-/* چراغ‌ها */
-.lights-group {
+.theme-dropdown {
+  display: none;
   position: absolute;
-  top: 50%;
-  right: 10px;
-  transform: translateY(-50%);
-  display: flex;
-  gap: 10px;
-}
-
-.light-item {
-  width: 40px;
-  height: 40px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-  filter: brightness(90%);
-  transition: 0.15s all ease;
-}
-
-.light-item.active {
-  filter: brightness(150%);
-}
-
-/* استایل پنل اطلاعات در دارک مود */
-.dark-mode .info-item {
-  margin-bottom: 10px;
-}
-
-.dark-mode .info-label,
-.dark-mode .info-value {
-  flex: 1;
-  padding: 8px 12px;
-  border: 2px solid #7f00ff;
+  top: 100%;
+  left: 0;
+  background-color: var(--header-bg);
   border-radius: 5px;
-  background: linear-gradient(45deg, #6a11cb, #2575fc);
+  overflow: hidden;
+}
+
+.theme-selector:hover .theme-dropdown {
+  display: flex;
+  flex-direction: row;
+}
+
+.theme-option {
+  background: none;
+  border: none;
   color: #fff;
-  font-weight: bold;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.theme-option:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Sub-Header */
+.sub-header {
+  margin-top: 60px;
+  padding: 0 15px;
+}
+
+.records-display {
+  flex: 1;
+}
+
+.record-box {
+  background-color: var(--card-back-bg);
+  padding: 15px;
+  border-radius: 10px;
   text-align: center;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
 }
 
-.dark-mode .info-label:hover,
-.dark-mode .info-value:hover {
-  transform: scale(1.05);
-  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.7);
+.record-item {
+  padding: 10px;
+  font-weight: bold;
 }
 
-.dark-mode .lights-group > div {
-  box-shadow: 0 0 10px rgba(255, 223, 0, 0.8) !important;
+.record-high {
+  background-color: #ffd700;
+  border-radius: 5px 5px 0 0;
 }
 
-/* کارت‌ها */
+.record-low {
+  background-color: #cd7f32;
+  border-radius: 0 0 0 5px;
+}
+
+.record-avg {
+  background-color: #c0c0c0;
+  border-radius: 0 0 5px 0;
+}
+
+.special-cards {
+  flex: 0 0 200px;
+  text-align: center;
+}
+
+.cards-stack {
+  position: relative;
+  height: 120px;
+}
+
+.special-card {
+  position: absolute;
+  width: 80px;
+  height: 100px;
+  background-color: var(--card-front-bg);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.special-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Game Body */
+.game-body {
+  position: relative;
+  width: 100%;
+  padding: 20px;
+}
+
+.game-board {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  padding: 24px;
+  width: 100% !important;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.overlay button {
+  font-size: 20px;
+  padding: 20px 30px;
+  text-shadow: 2px 2px 2px black;
+}
+
+/* Cards */
 .card {
   perspective: 1000px;
 }
@@ -213,177 +281,82 @@ body {
   color: #e3ece8 !important;
 }
 
-/* پنل اطلاعات */
-.info-panel {
+/* Footer */
+.game-footer {
+  padding-bottom: 20px;
+}
+
+.level-display {
+  margin: 20px 0;
+}
+
+.levels {
+  gap: 10px;
+}
+
+.level-item {
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+  background-color: #ccc;
+  border-radius: 50%;
+  text-align: center;
+}
+
+.level-item.active {
+  background-color: var(--header-bg);
+  color: #fff;
+}
+
+/* Help Menu */
+.help-menu {
+  position: fixed; /* ثابت کردن منو */
+  bottom: 20px; /* فاصله از پایین */
+  left: 20px; /* فاصله از چپ */
+  z-index: 1000; /* مطمئن شدن که بالای بقیه المنت‌ها باشه */
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding: 20px;
-  border-radius: 10px;
+  align-items: center;
 }
 
-.info-item {
+.btn-help-toggle {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: #ffca2c;
+  border: none;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  font-size: 1.2rem;
-}
-
-.info-label,
-.info-value {
-  flex: 1;
-  padding: 8px 12px;
-  border: 2px solid #0d6efd;
-  border-radius: 5px;
-  background: linear-gradient(45deg, #0d6efd, #00bfff);
-  color: #fff;
-  font-weight: bold;
-  text-align: center;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.info-label:hover,
-.info-value:hover {
-  transform: scale(1.05);
-  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
-}
-
-/* افکت لرزش */
-.shake {
-  animation: shake 0.1s ease-in-out 5;
-}
-
-@keyframes shake {
-  0% {
-    transform: translate(0, 0);
-    box-shadow: 2px 2px 10px red;
-  }
-  25% {
-    transform: translate(2px, 0);
-  }
-  50% {
-    transform: translate(0, 2px);
-  }
-  75% {
-    transform: translate(-2px, 0);
-  }
-  100% {
-    transform: translate(0, 0);
-    box-shadow: 2px 2px 10px red;
-  }
-}
-
-/* بخش بازی */
-.game-board {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
-  padding: 24px;
-  width: 100% !important;
-}
-
-.game-body {
-  position: relative;
-  width: 100%;
-}
-
-.overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 10;
-  display: flex;
   justify-content: center;
-  align-items: center;
 }
 
-.overlay button {
-  font-size: 20px;
-  padding: 20px 30px;
-  text-shadow: 2px 2px 2px black;
-}
-
-/* بخش کارت‌های مات */
-.matte-card {
-  position: relative;
-  height: 100px;
-  overflow: hidden;
-}
-
-.matte-card img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.matte-card span {
+.help-dropdown {
+  display: none;
   position: absolute;
-  top: 50%;
+  bottom: 60px; /* قرار گرفتن بالای دکمه */
   left: 50%;
-  transform: translate(-50%, -50%);
-  color: #ffffff;
-  font-size: 1rem;
-  font-weight: bold;
-  text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+  transform: translateX(-50%);
+  background-color: var(--card-back-bg);
+  border-radius: 8px;
+  padding: 10px;
+  width: 200px;
+  text-align: center;
 }
 
-/* دکمه‌ها */
-.buttons {
-  margin-top: 20px;
-}
-
-button {
-  font-size: 1.2rem;
-  padding: 10px 20px;
-  margin: 10px;
-}
-
-button:focus {
-  outline: none;
-}
-
-/* استایل کانتینر سکه‌ها */
-.coins-container {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  z-index: 1000;
+.help-menu:hover .help-dropdown {
+  display: block;
 }
 
 .coins-display {
-  font-size: 1.2rem;
-  font-weight: bold;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  position: absolute;
+  bottom: 120%; /* بالای دکمه و dropdown */
+  left: 50%;
+  transform: translateX(-50%);
   background-color: var(--bg-color);
-  padding: 10px 15px;
-  border-radius: 8px;
+  padding: 5px 10px;
+  border-radius: 5px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-}
-
-.coins-display i {
-  font-size: 1.5rem;
-}
-
-/* استایل کانتینر گزینه‌ها */
-.help-container {
-  position: fixed;
-  bottom: 20px;
-  left: 20px;
-  z-index: 1000;
-}
-
-.help-options {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  width: 200px;
+  white-space: nowrap;
 }
 
 .btn-help {
@@ -400,116 +373,72 @@ button:focus {
   background-color: #ffb107;
 }
 
-.btn-help:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
-
-.btn-help.active {
-  background-color: #28a745;
-  color: #fff;
-}
-
-/* تنظیمات برای دارک مود */
-.dark-mode .coins-display {
+/* Modal Styles */
+#authModal .modal-content,
+#userFormModal .modal-content,
+#gameModal .modal-content {
   background-color: var(--bg-color);
+  color: var(--text-color);
 }
 
-.dark-mode .btn-help {
-  background-color: #ffca2c;
-  color: #000;
+#authModal .btn,
+#userFormModal .btn,
+#gameModal .btn {
+  font-size: 1.1rem;
+  padding: 10px;
 }
 
-.dark-mode .btn-help:hover {
-  background-color: #ffb107;
+#userFormModal .form-control {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  border: 1px solid var(--toggle-border);
 }
 
-.dark-mode .btn-help:disabled {
-  background-color: #555;
+#userFormModal .form-control:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 5px rgba(13, 110, 253, 0.5);
 }
 
-/* Media Queries */
-
-/* تغییرات برای صفحه‌های با عرض کمتر از 756px */
-@media (max-width: 756px) {
+/* Responsive Design */
+@media (max-width: 768px) {
+  .sub-header {
+    flex-direction: column;
+    align-items: center;
+  }
+  .special-cards {
+    margin-top: 20px;
+  }
   .game-board {
+    grid-template-columns: repeat(4, 1fr);
     gap: 5px !important;
     padding: 5px !important;
-  }
-  .info-panel {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(2, 1fr);
-  }
-  .info-panel .info-item {
-    flex-direction: column;
-  }
-  .info-panel .info-item .info-label,
-  .info-panel .info-item .info-value {
-    width: 100% !important;
   }
   .card-inner {
     height: 100px !important;
   }
-  .header {
-    font-size: 16px;
-    width: 30%;
-    height: 50px !important;
-  }
-  .light-item {
-    width: 20px;
-    height: 20px;
-  }
 }
 
-/* تغییرات برای صفحه‌های با عرض کمتر از 576px (موبایل) */
 @media (max-width: 576px) {
-  .header {
-    font-size: 14px;
-    width: 40%;
+  .game-title {
+    font-size: 1.2rem;
   }
-  .lights-group {
-    display: none !important;
+  .record-box {
+    font-size: 0.9rem;
   }
-  .info-item {
-    font-size: 1rem;
+  .special-card {
+    width: 60px;
+    height: 80px;
+  }
+  .game-board {
+    grid-template-columns: repeat(4, 1fr);
+    padding: 10px !important;
+    gap: 4px !important;
   }
   .card-inner {
     height: 70px !important;
   }
-  button {
-    font-size: 1rem;
-  }
-
-  /* سکه‌ها و گزینه‌ها در موبایل */
-  .coins-container {
-    position: static;
-    margin: 10px auto;
-    width: fit-content;
-  }
-  .help-container {
-    position: static;
-    margin: 10px auto;
-    width: 80%;
-    max-width: 200px;
-  }
-  .help-options {
-    width: 100%;
-  }
-  .coins-display {
-    font-size: 1rem;
-    padding: 8px 12px;
-  }
-  .btn-help {
-    font-size: 0.9rem;
-    padding: 6px 10px;
-  }
-  .game-board {
-    padding: 10px !important;
-    gap: 4px !important;
-  }
-  body {
-    padding-top: 20px;
-    padding-bottom: 0;
+  .overlay button {
+    font-size: 16px;
+    padding: 15px 25px;
   }
 }
