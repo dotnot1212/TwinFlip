@@ -90,13 +90,8 @@ async function addUser(username, password, coins = 0, theme = "light") {
       ])
       .select();
     if (error) throw new Error(error.message);
-    console.log("Saving to localStorage:", { username, password });
     localStorage.setItem("lastUsername", username);
     localStorage.setItem("lastPassword", password);
-    console.log("Saved to localStorage:", {
-      username: localStorage.getItem("lastUsername"),
-      password: localStorage.getItem("lastPassword"),
-    });
     return data[0];
   } catch (error) {
     console.error("خطا در ثبت کاربر:", error.message);
@@ -165,23 +160,24 @@ async function checkLastUser() {
         setTheme(user.theme || "light");
         updateUI();
         initBoard();
-        console.log("User loaded successfully from localStorage:", {
-          lastUsername,
-          lastPassword,
-        });
+        console.log("کاربر با موفقیت از localStorage بارگذاری شد:", { lastUsername });
         return true;
       } else {
-        console.warn("کاربر پیدا نشد، اما localStorage حفظ می‌شود.");
-        // Do not clear localStorage unless explicitly needed
+        console.warn("کاربر پیدا نشد، اطلاعات localStorage پاک می‌شود.");
+        localStorage.removeItem("lastUsername");
+        localStorage.removeItem("lastPassword");
+        return false;
       }
     } catch (error) {
-      console.error("خطا در لود کاربر:", error.message);
-      // Avoid clearing localStorage here to debug persistence
+      console.error("خطا در بارگذاری کاربر:", error.message);
+      localStorage.removeItem("lastUsername");
+      localStorage.removeItem("lastPassword");
+      return false;
     }
   } else {
-    console.log("No user found in localStorage:", { lastUsername, lastPassword });
+    console.log("هیچ کاربری در localStorage یافت نشد:", { lastUsername, lastPassword });
+    return false;
   }
-  return false;
 }
 
 // Game Functions
@@ -320,47 +316,54 @@ async function endGame(won) {
 
     if (currentUser) {
       const lastPassword = localStorage.getItem("lastPassword");
-      if (!lastPassword) {
-        console.error("Password not found in localStorage. Cannot update user.");
-        alert("خطا: لطفاً دوباره وارد شوید.");
-      } else {
-        const user = await getUser(currentUser, lastPassword);
-        if (user) {
-          const updatedScores = {
-            high_score: Math.max(user.high_score || 0, score),
-            low_score:
-              user.scores_count === 0
-                ? score
-                : Math.min(user.low_score || Infinity, score),
-            avg_score:
-              user.scores_count === 0
-                ? score
-                : (user.avg_score * user.scores_count + score) /
-                  (user.scores_count + 1),
-            scores_count: (user.scores_count || 0) + 1,
-            level: currentLevel + 1,
-            last_score: score,
+      if (!lastPassword || !currentUser) {
+        console.error("اطلاعات کاربر در localStorage یافت نشد. نیاز به ورود مجدد.");
+        alert("لطفاً دوباره وارد شوید.");
+        showAuthModal();
+        return;
+      }
+
+      const user = await getUser(currentUser, lastPassword);
+      if (user) {
+        const updatedScores = {
+          high_score: Math.max(user.high_score || 0, score),
+          low_score:
+            user.scores_count === 0
+              ? score
+              : Math.min(user.low_score || Infinity, score),
+          avg_score:
+            user.scores_count === 0
+              ? score
+              : (user.avg_score * user.scores_count + score) /
+                (user.scores_count + 1),
+          scores_count: (user.scores_count || 0) + 1,
+          level: currentLevel + 1,
+          last_score: score,
+        };
+        const updatedUser = await updateUser(currentUser, {
+          ...updatedScores,
+          coins,
+          level: currentLevel + 1,
+        });
+        if (updatedUser) {
+          scores = {
+            high: updatedUser.high_score,
+            low: updatedUser.low_score,
+            avg: updatedUser.avg_score,
+            count: updatedUser.scores_count,
+            last: updatedUser.last_score,
           };
-          const updatedUser = await updateUser(currentUser, {
-            ...updatedScores,
-            coins,
-            level: currentLevel + 1,
-          });
-          if (updatedUser) {
-            scores = {
-              high: updatedUser.high_score,
-              low: updatedUser.low_score,
-              avg: updatedUser.avg_score,
-              count: updatedUser.scores_count,
-              last: updatedUser.last_score,
-            };
-            currentLevel = updatedUser.level;
-            coins = updatedUser.coins;
-          }
+          currentLevel = updatedUser.level;
+          coins = updatedUser.coins;
         }
+      } else {
+        console.error("کاربر پیدا نشد، ورود مجدد لازم است.");
+        localStorage.removeItem("lastUsername");
+        localStorage.removeItem("lastPassword");
+        currentUser = null;
+        showAuthModal();
       }
     } else {
-      // Handle guest mode (no currentUser)
       scores.high = Math.max(scores.high, score);
       scores.low = scores.count === 0 ? score : Math.min(scores.low, score);
       scores.count++;
@@ -585,7 +588,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.body.appendChild(logoutBtn);
 
   logoutBtn.addEventListener("click", () => {
-    console.log("Logging out, clearing localStorage");
+    console.log("خروج انجام شد، پاک کردن localStorage");
     localStorage.removeItem("lastUsername");
     localStorage.removeItem("lastPassword");
     currentUser = null;
@@ -690,4 +693,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("help-toggle").addEventListener("click", () => {
     document.querySelector(".help-menu").classList.toggle("active");
   });
+});
+
+// حفظ اطلاعات کاربر قبل از رفرش صفحه
+window.addEventListener("beforeunload", () => {
+  if (currentUser) {
+    localStorage.setItem("lastUsername", currentUser);
+    localStorage.setItem("lastPassword", localStorage.getItem("lastPassword"));
+  }
 });
