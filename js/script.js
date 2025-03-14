@@ -90,8 +90,13 @@ async function addUser(username, password, coins = 0, theme = "light") {
       ])
       .select();
     if (error) throw new Error(error.message);
+    console.log("Saving to localStorage:", { username, password });
     localStorage.setItem("lastUsername", username);
     localStorage.setItem("lastPassword", password);
+    console.log("Saved to localStorage:", {
+      username: localStorage.getItem("lastUsername"),
+      password: localStorage.getItem("lastPassword"),
+    });
     return data[0];
   } catch (error) {
     console.error("خطا در ثبت کاربر:", error.message);
@@ -160,19 +165,21 @@ async function checkLastUser() {
         setTheme(user.theme || "light");
         updateUI();
         initBoard();
+        console.log("User loaded successfully from localStorage:", {
+          lastUsername,
+          lastPassword,
+        });
         return true;
       } else {
-        // Invalid credentials; clear localStorage and prompt login
-        localStorage.removeItem("lastUsername");
-        localStorage.removeItem("lastPassword");
-        currentUser = null;
+        console.warn("کاربر پیدا نشد، اما localStorage حفظ می‌شود.");
+        // Do not clear localStorage unless explicitly needed
       }
     } catch (error) {
       console.error("خطا در لود کاربر:", error.message);
-      localStorage.removeItem("lastUsername");
-      localStorage.removeItem("lastPassword");
-      currentUser = null;
+      // Avoid clearing localStorage here to debug persistence
     }
+  } else {
+    console.log("No user found in localStorage:", { lastUsername, lastPassword });
   }
   return false;
 }
@@ -578,6 +585,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.body.appendChild(logoutBtn);
 
   logoutBtn.addEventListener("click", () => {
+    console.log("Logging out, clearing localStorage");
     localStorage.removeItem("lastUsername");
     localStorage.removeItem("lastPassword");
     currentUser = null;
