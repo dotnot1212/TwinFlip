@@ -161,9 +161,17 @@ async function checkLastUser() {
         updateUI();
         initBoard();
         return true;
+      } else {
+        // Invalid credentials; clear localStorage and prompt login
+        localStorage.removeItem("lastUsername");
+        localStorage.removeItem("lastPassword");
+        currentUser = null;
       }
     } catch (error) {
       console.error("خطا در لود کاربر:", error.message);
+      localStorage.removeItem("lastUsername");
+      localStorage.removeItem("lastPassword");
+      currentUser = null;
     }
   }
   return false;
@@ -226,10 +234,10 @@ function updateUI() {
   document.getElementById("coins").textContent = coins;
   document.getElementById("current-level").textContent = currentLevel;
   document.getElementById("high-score").textContent = scores.high;
-  document.getElementById("low-score").textContent = scores.low === Infinity ? 0 : scores.low;
+  document.getElementById("low-score").textContent =
+    scores.low === Infinity ? 0 : scores.low;
   document.getElementById("last-score").textContent = scores.last;
   updateHelpButtons();
-
   const progressRing = document.getElementById("level-progress-ring");
   const progress = (correct / TOTAL_PAIRS) * 283;
   progressRing.style.strokeDashoffset = 283 - progress;
@@ -302,35 +310,50 @@ async function endGame(won) {
   if (won) {
     const score = correct * 10 - errors * 5;
     scores.last = score;
+
     if (currentUser) {
-      const user = await getUser(currentUser, localStorage.getItem("lastPassword"));
-      if (user) {
-        const updatedScores = {
-          high_score: Math.max(user.high_score || 0, score),
-          low_score: user.scores_count === 0 ? score : Math.min(user.low_score || Infinity, score),
-          avg_score: user.scores_count === 0 ? score : (user.avg_score * user.scores_count + score) / (user.scores_count + 1),
-          scores_count: (user.scores_count || 0) + 1,
-          level: currentLevel + 1,
-          last_score: score,
-        };
-        const updatedUser = await updateUser(currentUser, {
-          ...updatedScores,
-          coins,
-          level: currentLevel + 1,
-        });
-        if (updatedUser) {
-          scores = {
-            high: updatedUser.high_score,
-            low: updatedUser.low_score,
-            avg: updatedUser.avg_score,
-            count: updatedUser.scores_count,
-            last: updatedUser.last_score,
+      const lastPassword = localStorage.getItem("lastPassword");
+      if (!lastPassword) {
+        console.error("Password not found in localStorage. Cannot update user.");
+        alert("خطا: لطفاً دوباره وارد شوید.");
+      } else {
+        const user = await getUser(currentUser, lastPassword);
+        if (user) {
+          const updatedScores = {
+            high_score: Math.max(user.high_score || 0, score),
+            low_score:
+              user.scores_count === 0
+                ? score
+                : Math.min(user.low_score || Infinity, score),
+            avg_score:
+              user.scores_count === 0
+                ? score
+                : (user.avg_score * user.scores_count + score) /
+                  (user.scores_count + 1),
+            scores_count: (user.scores_count || 0) + 1,
+            level: currentLevel + 1,
+            last_score: score,
           };
-          currentLevel = updatedUser.level;
-          coins = updatedUser.coins;
+          const updatedUser = await updateUser(currentUser, {
+            ...updatedScores,
+            coins,
+            level: currentLevel + 1,
+          });
+          if (updatedUser) {
+            scores = {
+              high: updatedUser.high_score,
+              low: updatedUser.low_score,
+              avg: updatedUser.avg_score,
+              count: updatedUser.scores_count,
+              last: updatedUser.last_score,
+            };
+            currentLevel = updatedUser.level;
+            coins = updatedUser.coins;
+          }
         }
       }
     } else {
+      // Handle guest mode (no currentUser)
       scores.high = Math.max(scores.high, score);
       scores.low = scores.count === 0 ? score : Math.min(scores.low, score);
       scores.count++;
@@ -356,8 +379,11 @@ async function endGame(won) {
 function addSpecialCard() {
   const card = document.createElement("div");
   card.classList.add("special-card");
-  card.style.left = `${document.getElementById("special-cards-stack").childElementCount * 10}px`;
-  card.style.zIndex = document.getElementById("special-cards-stack").childElementCount;
+  card.style.left = `${
+    document.getElementById("special-cards-stack").childElementCount * 10
+  }px`;
+  card.style.zIndex =
+    document.getElementById("special-cards-stack").childElementCount;
   card.innerHTML = `<img src="img/matte.jpg" alt="Special Card" />`;
   document.getElementById("special-cards-stack").appendChild(card);
 }
@@ -366,7 +392,8 @@ function addSpecialCard() {
 function updateHelpButtons() {
   document.getElementById("hint").disabled = coins < HINT_COST;
   document.getElementById("extra-time").disabled = coins < EXTRA_TIME_COST;
-  document.getElementById("double-coins").disabled = coins < DOUBLE_COINS_COST || doubleCoinsActive;
+  document.getElementById("double-coins").disabled =
+    coins < DOUBLE_COINS_COST || doubleCoinsActive;
 }
 
 function useHint() {
@@ -378,13 +405,18 @@ function useHint() {
     const selectedCard = flippedCards[0];
     const unmatchedCards = cards
       .map((card, index) => ({ card, index }))
-      .filter((c) => !matchedCards.includes(document.querySelector(".game-board").children[c.index]));
+      .filter((c) =>
+        !matchedCards.includes(
+          document.querySelector(".game-board").children[c.index]
+        )
+      );
     const matchCard = unmatchedCards.find(
       (c) => c.card === selectedCard.card && c.index !== selectedCard.index
     );
 
     if (matchCard) {
-      const cardToShake = document.querySelector(".game-board").children[matchCard.index];
+      const cardToShake =
+        document.querySelector(".game-board").children[matchCard.index];
       cardToShake.classList.add("flipped");
       cardToShake.querySelector(
         ".card-back"
@@ -402,7 +434,11 @@ function useHint() {
   } else {
     const unmatchedCards = cards
       .map((card, index) => ({ card, index }))
-      .filter((c) => !matchedCards.includes(document.querySelector(".game-board").children[c.index]));
+      .filter((c) =>
+        !matchedCards.includes(
+          document.querySelector(".game-board").children[c.index]
+        )
+      );
     const firstCard = unmatchedCards.find((c) =>
       unmatchedCards.some(
         (other) => other.card === c.card && other.index !== c.index
@@ -532,6 +568,27 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   });
 
+  // Add logout button
+  const logoutBtn = document.createElement("button");
+  logoutBtn.textContent = "خروج";
+  logoutBtn.classList.add("btn", "btn-danger");
+  logoutBtn.style.position = "fixed";
+  logoutBtn.style.top = "10px";
+  logoutBtn.style.right = "10px";
+  document.body.appendChild(logoutBtn);
+
+  logoutBtn.addEventListener("click", () => {
+    localStorage.removeItem("lastUsername");
+    localStorage.removeItem("lastPassword");
+    currentUser = null;
+    coins = 0;
+    scores = { high: 0, low: Infinity, avg: 0, count: 0, last: 0 };
+    currentLevel = 1;
+    updateUI();
+    initBoard();
+    showAuthModal();
+  });
+
   const isLoggedIn = await checkLastUser();
   if (!isLoggedIn) {
     showAuthModal();
@@ -618,7 +675,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   document.getElementById("hint").addEventListener("click", useHint);
   document.getElementById("extra-time").addEventListener("click", useExtraTime);
-  document.getElementById("double-coins").addEventListener("click", useDoubleCoins);
+  document
+    .getElementById("double-coins")
+    .addEventListener("click", useDoubleCoins);
 
   document.getElementById("help-toggle").addEventListener("click", () => {
     document.querySelector(".help-menu").classList.toggle("active");
