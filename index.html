@@ -154,17 +154,21 @@
       aria-hidden="true"
     >
       <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
+        <div class="modal-content gaming-modal">
+          <div class="modal-header gaming-header">
             <h5 class="modal-title" id="authModalLabel">
-              به TwinFlip خوش آمدید
+              <i class="fas fa-gamepad me-2"></i> به TwinFlip خوش آمدید
             </h5>
           </div>
-          <div class="modal-body text-center">
-            <button id="loginBtn" class="btn btn-primary w-75 mb-3">
-              ورود
+          <div class="modal-body gaming-body text-center">
+            <div class="gaming-effect"></div>
+            <p class="welcome-text">آماده‌ی فلیپ کردن کارت‌ها هستید؟</p>
+            <button id="loginBtn" class="btn gaming-btn btn-login w-75 mb-3">
+              <i class="fas fa-sign-in-alt me-2"></i> ورود
             </button>
-            <button id="signupBtn" class="btn btn-success w-75">ثبت‌نام</button>
+            <button id="signupBtn" class="btn gaming-btn btn-signup w-75">
+              <i class="fas fa-user-plus me-2"></i> ثبت‌نام
+            </button>
           </div>
         </div>
       </div>
@@ -179,34 +183,42 @@
       aria-hidden="true"
     >
       <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="userFormModalLabel">ورود یا ثبت‌نام</h5>
+        <div class="modal-content gaming-modal">
+          <div class="modal-header gaming-header">
+            <h5 class="modal-title" id="userFormModalLabel">
+              <i class="fas fa-user-circle me-2"></i> ورود یا ثبت‌نام
+            </h5>
             <button
               type="button"
-              class="btn-close"
+              class="btn-close btn-close-white"
               data-bs-dismiss="modal"
               aria-label="بستن"
             ></button>
           </div>
-          <div class="modal-body">
-            <form id="userForm">
-              <div class="mb-3">
-                <label for="username" class="form-label">نام کاربری</label>
+          <div class="modal-body gaming-body">
+            <div class="gaming-effect"></div>
+            <form id="userForm" class="smart-form">
+              <div class="mb-4 form-group">
+                <label for="username" class="form-label gaming-label">
+                  <i class="fas fa-user me-2"></i> نام کاربری
+                </label>
                 <input
                   type="text"
-                  class="form-control"
+                  class="form-control gaming-input"
                   id="username"
-                  placeholder="نام کاربری خود را وارد کنید"
+                  placeholder="حداقل 3 کاراکتر"
                   required
                   minlength="3"
                 />
+                <div class="error-message" id="username-error"></div>
               </div>
-              <div class="mb-3 position-relative">
-                <label for="password" class="form-label">رمز عبور</label>
+              <div class="mb-4 form-group position-relative">
+                <label for="password" class="form-label gaming-label">
+                  <i class="fas fa-lock me-2"></i> رمز عبور
+                </label>
                 <input
                   type="password"
-                  class="form-control"
+                  class="form-control gaming-input"
                   id="password"
                   placeholder="حداقل 6 کاراکتر"
                   required
@@ -214,16 +226,16 @@
                 />
                 <button
                   type="button"
-                  class="btn btn-outline-secondary position-absolute"
-                  style="top: 50%; right: 10px; transform: translateY(-50%)"
+                  class="toggle-password-btn"
                   id="togglePassword"
                 >
                   <i class="fas fa-eye"></i>
                 </button>
+                <div class="error-message" id="password-error"></div>
               </div>
               <button
                 type="submit"
-                class="btn btn-primary w-100"
+                class="btn gaming-btn btn-submit w-100"
                 id="submitUserForm"
               >
                 تأیید
@@ -248,7 +260,7 @@
             <h5 class="modal-title" id="gameModalLabel">عنوان بازی</h5>
             <button
               type="button"
-              class="btn-close"
+              class="btn-close btn-close-white"
               data-bs-dismiss="modal"
               aria-label="بستن"
             ></button>
