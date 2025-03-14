@@ -92,6 +92,7 @@ async function addUser(username, password, coins = 0, theme = "light") {
     if (error) throw new Error(error.message);
     localStorage.setItem("lastUsername", username);
     localStorage.setItem("lastPassword", password);
+    console.log("کاربر ثبت شد و در localStorage ذخیره شد:", { username, password });
     return data[0];
   } catch (error) {
     console.error("خطا در ثبت کاربر:", error.message);
@@ -143,6 +144,7 @@ async function updateUser(username, data) {
 async function checkLastUser() {
   const lastUsername = localStorage.getItem("lastUsername");
   const lastPassword = localStorage.getItem("lastPassword");
+  console.log("بررسی localStorage در checkLastUser:", { lastUsername, lastPassword });
   if (lastUsername && lastPassword) {
     try {
       const user = await getUser(lastUsername, lastPassword);
@@ -310,6 +312,7 @@ function checkMatch() {
 }
 
 async function endGame(won) {
+  console.log("وضعیت کاربر در پایان بازی:", { currentUser, lastPassword: localStorage.getItem("lastPassword") });
   if (won) {
     const score = correct * 10 - errors * 5;
     scores.last = score;
@@ -655,6 +658,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     if (user) {
+      localStorage.setItem("lastUsername", username);
+      localStorage.setItem("lastPassword", password);
+      console.log("ورود/ثبت‌نام موفق، localStorage به‌روزرسانی شد:", { username, password });
       coins = user.coins || 0;
       scores = {
         high: user.high_score || 0,
@@ -700,5 +706,9 @@ window.addEventListener("beforeunload", () => {
   if (currentUser) {
     localStorage.setItem("lastUsername", currentUser);
     localStorage.setItem("lastPassword", localStorage.getItem("lastPassword"));
+    console.log("ذخیره‌سازی قبل از رفرش:", {
+      lastUsername: currentUser,
+      lastPassword: localStorage.getItem("lastPassword"),
+    });
   }
 });
