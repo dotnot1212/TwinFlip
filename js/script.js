@@ -633,20 +633,39 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   });
 
+  document.getElementById("userForm").addEventListener("input", (e) => {
+    const usernameInput = document.getElementById("username");
+    const passwordInput = document.getElementById("password");
+    const usernameError = document.getElementById("username-error");
+    const passwordError = document.getElementById("password-error");
+
+    // اعتبارسنجی نام کاربری
+    if (usernameInput.value.length < 3) {
+      usernameError.textContent = "نام کاربری باید حداقل 3 کاراکتر باشد!";
+      usernameError.classList.add("active");
+    } else {
+      usernameError.textContent = "";
+      usernameError.classList.remove("active");
+    }
+
+    // اعتبارسنجی رمز عبور
+    if (passwordInput.value.length < 6) {
+      passwordError.textContent = "رمز عبور باید حداقل 6 کاراکتر باشد!";
+      passwordError.classList.add("active");
+    } else {
+      passwordError.textContent = "";
+      passwordError.classList.remove("active");
+    }
+  });
+
   document.getElementById("userForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const username = document.getElementById("username").value.trim();
     const password = document.getElementById("password").value.trim();
-    const isSignup =
-      document.getElementById("submitUserForm").textContent === "ثبت‌نام";
+    const isSignup = document.getElementById("submitUserForm").textContent === "ثبت‌نام";
     currentUser = username;
 
-    if (username.length < 3) {
-      alert("نام کاربری باید حداقل 3 کاراکتر باشد!");
-      return;
-    }
-    if (password.length < 6) {
-      alert("رمز عبور باید حداقل 6 کاراکتر باشد!");
+    if (username.length < 3 || password.length < 6) {
       return;
     }
 
@@ -672,9 +691,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       currentLevel = user.level || 1;
       setTheme(user.theme || "light");
       updateUI();
-      bootstrap.Modal.getInstance(
-        document.getElementById("userFormModal")
-      ).hide();
+      bootstrap.Modal.getInstance(document.getElementById("userFormModal")).hide();
       initBoard();
     }
   });
